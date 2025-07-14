@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">運動筆記</string>
     <string name="home">首頁</string>
+    <string name="home_no_sessions">沒有任何運動時段</string>
 </resources>
