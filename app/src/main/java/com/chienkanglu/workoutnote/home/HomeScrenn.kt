@@ -1,5 +1,7 @@
 package com.chienkanglu.workoutnote.home
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,15 +15,24 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -45,6 +56,9 @@ internal fun HomeScreenRoute(
     HomeScreen(
         sessionUiState = sessionUiState,
         onAddButtonClick = { viewModel.insertSession() },
+        onDeleteSessionClick = { ids ->
+            viewModel.deleteSessions(ids)
+        },
         modifier = modifier,
     )
 }
@@ -53,6 +67,7 @@ internal fun HomeScreenRoute(
 fun HomeScreen(
     sessionUiState: SessionUiState,
     onAddButtonClick: () -> Unit,
+    onDeleteSessionClick: (List<Int>) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -97,6 +112,7 @@ fun HomeScreen(
                                 session,
                                 index == 0,
                                 modifier,
+                                onDeleteSessionClick = onDeleteSessionClick,
                             )
                         }
                     }
@@ -110,19 +126,60 @@ fun SessionItem(
     session: Session,
     isFirst: Boolean,
     modifier: Modifier = Modifier,
+    onDeleteSessionClick: (List<Int>) -> Unit,
 ) {
     if (!isFirst) {
         HorizontalDivider(thickness = 1.dp)
     }
 
+    var openActionMenu by rememberSaveable { mutableStateOf(false) }
+    val haptics = LocalHapticFeedback.current
+
     Row(
         modifier
             .fillMaxWidth()
-            .padding(top = 16.dp, bottom = 16.dp, end = 8.dp),
+            .combinedClickable(
+                onClick = {},
+                onLongClick = {
+                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    openActionMenu = true
+                },
+            ).padding(top = 16.dp, bottom = 16.dp, end = 8.dp),
     ) {
         Text(
             text = dateFormatted(session.date),
             style = MaterialTheme.typography.bodyLarge,
+        )
+    }
+
+    if (openActionMenu) {
+        SessionActionsSheet(
+            session = session,
+            onDismissSheet = { openActionMenu = false },
+            onDeleteSessionClick = onDeleteSessionClick,
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun SessionActionsSheet(
+    session: Session,
+    onDismissSheet: () -> Unit,
+    onDeleteSessionClick: (List<Int>) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    ModalBottomSheet(
+        onDismissRequest = onDismissSheet,
+    ) {
+        ListItem(
+            headlineContent = { Text(stringResource(R.string.delete)) },
+            leadingContent = { Icon(Icons.Default.Delete, null) },
+            modifier =
+                modifier.clickable {
+                    onDeleteSessionClick(listOf(session.id))
+                    onDismissSheet()
+                },
         )
     }
 }

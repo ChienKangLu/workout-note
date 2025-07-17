@@ -18,4 +18,6 @@ class DefaultSessionRepository
             sessionDao.insertSession(
                 SessionEntity(date = Clock.System.now()),
             ) != -1L
+
+        override suspend fun deleteSession(ids: List<Int>) = sessionDao.deleteSessions(ids) == ids.size
     }

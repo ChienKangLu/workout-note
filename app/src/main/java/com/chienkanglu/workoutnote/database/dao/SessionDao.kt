@@ -14,4 +14,12 @@ interface SessionDao {
 
     @Query("SELECT * FROM session")
     fun getSessions(): Flow<List<SessionEntity>>
+
+    @Query(
+        value = """
+            DELETE FROM session
+            WHERE id in (:ids)
+        """,
+    )
+    suspend fun deleteSessions(ids: List<Int>): Int
 }

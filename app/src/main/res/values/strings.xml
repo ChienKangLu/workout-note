@@ -2,4 +2,5 @@
     <string name="app_name">Workout Note</string>
     <string name="home">Home</string>
     <string name="home_no_sessions">There aren\'t any sessions.</string>
+    <string name="delete">Delete</string>
 </resources>

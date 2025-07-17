@@ -7,4 +7,6 @@ interface SessionRepository {
     fun getSessions(): Flow<List<Session>>
 
     suspend fun insertSession(): Boolean
+
+    suspend fun deleteSession(ids: List<Int>): Boolean
 }

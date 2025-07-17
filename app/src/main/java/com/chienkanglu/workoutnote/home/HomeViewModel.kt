@@ -36,4 +36,10 @@ HomeViewModel
                 sessionRepository.insertSession()
             }
         }
+
+        fun deleteSessions(ids: List<Int>) {
+            viewModelScope.launch {
+                sessionRepository.deleteSession(ids)
+            }
+        }
     }
