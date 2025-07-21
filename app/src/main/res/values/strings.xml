@@ -1,6 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Workout Note</string>
     <string name="home">Home</string>
-    <string name="home_no_sessions">There aren\'t any sessions.</string>
+    <string name="no_sessions">There aren\'t any sessions.</string>
     <string name="delete">Delete</string>
+    <string name="exercises">Exercises</string>
+    <string name="no_exercises">There aren\'t any exercises.</string>
+    <string name="dialog_cancel_button_title">Cancel</string>
+    <string name="dialog_create_button_title">Create</string>
+    <string name="dialog_add_exercise_title">New Exercise</string>
+    <string name="dialog_add_exercise_description">Please name your new exercise</string>
+    <string name="dialog_add_exercise_text_field_label">Exercise Name</string>
 </resources>

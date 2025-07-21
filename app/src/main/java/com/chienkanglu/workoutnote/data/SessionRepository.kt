@@ -8,5 +8,5 @@ interface SessionRepository {
 
     suspend fun insertSession(): Boolean
 
-    suspend fun deleteSession(ids: List<Int>): Boolean
+    suspend fun deleteSessions(ids: List<Int>): Boolean
 }

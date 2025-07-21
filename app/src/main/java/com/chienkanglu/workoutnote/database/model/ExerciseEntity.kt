@@ -2,13 +2,12 @@ package com.chienkanglu.workoutnote.database.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.datetime.Instant
 
 @Entity(
-    tableName = "session",
+    tableName = "exercise",
 )
-data class SessionEntity(
+data class ExerciseEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
-    val date: Instant,
+    val name: String,
 )

@@ -6,40 +6,45 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.navigation.compose.rememberNavController
-import com.chienkanglu.workoutnote.navigation.AppDestinations
+import androidx.navigation.NavDestination
+import androidx.navigation.NavDestination.Companion.hasRoute
+import androidx.navigation.NavDestination.Companion.hierarchy
 import com.chienkanglu.workoutnote.navigation.WntNavHost
+import kotlin.reflect.KClass
 
 @Composable
-fun WntApp() {
-    val navController = rememberNavController()
-    var currentDestination by rememberSaveable { mutableStateOf(AppDestinations.HOME) }
+fun WntApp(appState: WntAppState) {
+    val currentDestination = appState.currentDestination
 
     NavigationSuiteScaffold(
         navigationSuiteItems = {
-            AppDestinations.entries.forEach {
+            appState.topLevelDestinations.forEach { destination ->
+                val selected =
+                    currentDestination
+                        .isRouteInHierarchy(destination.route)
                 item(
                     icon = {
                         Icon(
-                            it.icon,
-                            contentDescription = stringResource(it.contentDescription),
+                            destination.icon,
+                            contentDescription = stringResource(destination.contentDescription),
                         )
                     },
-                    label = { Text(stringResource(it.label)) },
-                    selected = it == currentDestination,
-                    onClick = { currentDestination = it },
+                    label = { Text(stringResource(destination.label)) },
+                    selected = selected,
+                    onClick = { appState.navigateToTopLevelDestination(destination) },
                 )
             }
         },
     ) {
         Scaffold { innerPadding ->
-            WntNavHost(modifier = Modifier.padding(innerPadding), navController)
+            WntNavHost(appState, modifier = Modifier.padding(innerPadding))
         }
     }
 }
+
+private fun NavDestination?.isRouteInHierarchy(route: KClass<*>) =
+    this?.hierarchy?.any {
+        it.hasRoute(route)
+    } ?: false

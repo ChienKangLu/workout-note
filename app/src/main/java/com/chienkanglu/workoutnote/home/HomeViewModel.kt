@@ -20,15 +20,15 @@ HomeViewModel
     constructor(
         private val sessionRepository: DefaultSessionRepository,
     ) : ViewModel() {
-        val sessionUiState: StateFlow<SessionUiState> =
+        val sessionsUiState: StateFlow<SessionsUiState> =
             sessionRepository
                 .getSessions()
-                .map<List<Session>, SessionUiState>(SessionUiState::Success)
-                .onStart { emit(SessionUiState.Loading) }
+                .map<List<Session>, SessionsUiState>(SessionsUiState::Success)
+                .onStart { emit(SessionsUiState.Loading) }
                 .stateIn(
                     scope = viewModelScope,
                     started = SharingStarted.WhileSubscribed(5_000),
-                    initialValue = SessionUiState.Loading,
+                    initialValue = SessionsUiState.Loading,
                 )
 
         fun insertSession() {
@@ -39,7 +39,7 @@ HomeViewModel
 
         fun deleteSessions(ids: List<Int>) {
             viewModelScope.launch {
-                sessionRepository.deleteSession(ids)
+                sessionRepository.deleteSessions(ids)
             }
         }
     }

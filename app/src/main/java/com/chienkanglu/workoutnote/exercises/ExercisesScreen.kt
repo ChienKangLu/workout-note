@@ -1,4 +1,4 @@
-package com.chienkanglu.workoutnote.home
+package com.chienkanglu.workoutnote.exercises
 
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.HorizontalDivider
@@ -22,6 +23,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -33,49 +35,45 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.chienkanglu.workoutnote.R
-import com.chienkanglu.workoutnote.data.model.Session
+import com.chienkanglu.workoutnote.data.model.Exercise
 import com.chienkanglu.workoutnote.ui.common.ActionSheet
-import com.chienkanglu.workoutnote.ui.common.LocalTimeZone
-import kotlinx.datetime.Instant
-import kotlinx.datetime.toJavaInstant
-import kotlinx.datetime.toJavaZoneId
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.Locale
+import com.chienkanglu.workoutnote.ui.common.TextFieldDialog
 
 @Composable
-internal fun HomeScreenRoute(
+internal fun ExercisesScreenRoute(
     modifier: Modifier = Modifier,
-    viewModel: HomeViewModel = hiltViewModel(),
+    viewModel: ExercisesViewModel = hiltViewModel(),
 ) {
-    val sessionsUiState by viewModel.sessionsUiState.collectAsStateWithLifecycle()
-    HomeScreen(
-        sessionsUiState = sessionsUiState,
-        addSession = { viewModel.insertSession() },
-        deleteSessions = { ids ->
-            viewModel.deleteSessions(ids)
+    val exercisesUiState by viewModel.exercisesUiState.collectAsStateWithLifecycle()
+    ExercisesScreen(
+        exercisesUiState = exercisesUiState,
+        addExercise = { viewModel.insertExercise(it) },
+        deleteExercises = { ids ->
+            viewModel.deleteExercises(ids)
         },
         modifier = modifier,
     )
 }
 
 @Composable
-fun HomeScreen(
-    sessionsUiState: SessionsUiState,
-    addSession: () -> Unit,
-    deleteSessions: (List<Int>) -> Unit,
+fun ExercisesScreen(
+    exercisesUiState: ExercisesUiState,
+    addExercise: (name: String) -> Unit,
+    deleteExercises: (List<Int>) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val showAddExerciseDialog = remember { mutableStateOf(false) }
+
     Column(
-        modifier =
-            modifier
-                .padding(16.dp),
+        modifier = modifier.padding(16.dp),
     ) {
         Row(
             modifier = modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.End,
         ) {
-            IconButton(addSession) {
+            IconButton({
+                showAddExerciseDialog.value = true
+            }) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = null,
@@ -84,44 +82,65 @@ fun HomeScreen(
         }
 
         Text(
-            stringResource(R.string.home),
+            stringResource(R.string.exercises),
             style = MaterialTheme.typography.titleLarge,
         )
 
         Spacer(modifier = modifier.height(10.dp))
 
-        when (sessionsUiState) {
-            is SessionsUiState.Loading -> Unit
-            is SessionsUiState.Success ->
-                if (sessionsUiState.sessions.isEmpty()) {
+        when (exercisesUiState) {
+            is ExercisesUiState.Loading -> Unit
+            is ExercisesUiState.Success ->
+                if (exercisesUiState.exercises.isEmpty()) {
                     Box(modifier = Modifier.fillMaxSize()) {
                         Text(
-                            text = stringResource(R.string.no_sessions),
+                            text = stringResource(R.string.no_exercises),
                             style = MaterialTheme.typography.bodyLarge,
                             modifier = Modifier.align(Alignment.Center),
                         )
                     }
                 } else {
                     LazyColumn {
-                        itemsIndexed(items = sessionsUiState.sessions) { index, session ->
-                            SessionItem(
-                                session = session,
+                        itemsIndexed(items = exercisesUiState.exercises) { index, exercise ->
+                            ExerciseItem(
+                                exercise = exercise,
                                 isFirst = index == 0,
-                                deleteSessions = deleteSessions,
+                                deleteExercise = deleteExercises,
                                 modifier = modifier,
                             )
                         }
                     }
                 }
         }
+
+        if (showAddExerciseDialog.value) {
+            val exerciseNameSate = rememberTextFieldState()
+
+            TextFieldDialog(
+                state = exerciseNameSate,
+                modifier = modifier,
+                title = stringResource(R.string.dialog_add_exercise_title),
+                description = stringResource(R.string.dialog_add_exercise_description),
+                textFieldLabel = stringResource(R.string.dialog_add_exercise_text_field_label),
+                cancelButtonTitle = stringResource(R.string.dialog_cancel_button_title),
+                confirmButtonTitle = stringResource(R.string.dialog_create_button_title),
+                onDismissRequest = {
+                    showAddExerciseDialog.value = false
+                },
+                onConfirmation = {
+                    showAddExerciseDialog.value = false
+                    addExercise(exerciseNameSate.text.toString())
+                },
+            )
+        }
     }
 }
 
 @Composable
-fun SessionItem(
-    session: Session,
+fun ExerciseItem(
+    exercise: Exercise,
     isFirst: Boolean,
-    deleteSessions: (List<Int>) -> Unit,
+    deleteExercise: (List<Int>) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (!isFirst) {
@@ -143,7 +162,7 @@ fun SessionItem(
             ).padding(top = 16.dp, bottom = 16.dp, end = 8.dp),
     ) {
         Text(
-            text = dateFormatted(session.date),
+            text = exercise.name,
             style = MaterialTheme.typography.bodyLarge,
         )
     }
@@ -152,16 +171,8 @@ fun SessionItem(
         ActionSheet(
             onDismissSheet = { showActionSheet = false },
             onDelete = {
-                deleteSessions(listOf(session.id))
+                deleteExercise(listOf(exercise.id))
             },
         )
     }
 }
-
-@Composable
-fun dateFormatted(publishDate: Instant): String =
-    DateTimeFormatter
-        .ofLocalizedDate(FormatStyle.MEDIUM)
-        .withLocale(Locale.getDefault())
-        .withZone(LocalTimeZone.current.toJavaZoneId())
-        .format(publishDate.toJavaInstant())

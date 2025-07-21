@@ -19,5 +19,5 @@ class DefaultSessionRepository
                 SessionEntity(date = Clock.System.now()),
             ) != -1L
 
-        override suspend fun deleteSession(ids: List<Int>) = sessionDao.deleteSessions(ids) == ids.size
+        override suspend fun deleteSessions(ids: List<Int>) = sessionDao.deleteSessions(ids) == ids.size
     }

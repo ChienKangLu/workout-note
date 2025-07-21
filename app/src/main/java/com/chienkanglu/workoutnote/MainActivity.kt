@@ -13,8 +13,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val appState = rememberWntAppState()
+
             WntTheme {
-                WntApp()
+                WntApp(appState)
             }
         }
     }

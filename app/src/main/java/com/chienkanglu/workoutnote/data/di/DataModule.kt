@@ -1,6 +1,8 @@
 package com.chienkanglu.workoutnote.data.di
 
+import com.chienkanglu.workoutnote.data.DefaultExerciseRepository
 import com.chienkanglu.workoutnote.data.DefaultSessionRepository
+import com.chienkanglu.workoutnote.data.ExerciseRepository
 import com.chienkanglu.workoutnote.data.SessionRepository
 import dagger.Binds
 import dagger.Module
@@ -12,4 +14,7 @@ import dagger.hilt.components.SingletonComponent
 abstract class DataModule {
     @Binds
     abstract fun bindsSessionRepository(sessionRepository: DefaultSessionRepository): SessionRepository
+
+    @Binds
+    abstract fun bindsExerciseRepository(exerciseRepository: DefaultExerciseRepository): ExerciseRepository
 }

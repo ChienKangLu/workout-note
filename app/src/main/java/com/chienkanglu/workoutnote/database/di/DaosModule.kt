@@ -11,4 +11,7 @@ import dagger.hilt.components.SingletonComponent
 object DaosModule {
     @Provides
     fun providesSessionDao(database: WntDatabase) = database.sessionDao()
+
+    @Provides
+    fun providesExerciseDao(database: WntDatabase) = database.exerciseDao()
 }
