@@ -11,4 +11,5 @@
     <string name="dialog_add_exercise_title">新增訓練項目</string>
     <string name="dialog_add_exercise_description">請為您的新訓練項目命名</string>
     <string name="dialog_add_exercise_text_field_label">訓練項目名稱</string>
+    <string name="new_exercise">添加訓練</string>
 </resources>

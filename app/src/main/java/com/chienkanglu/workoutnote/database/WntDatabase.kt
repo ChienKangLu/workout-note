@@ -7,12 +7,14 @@ import com.chienkanglu.workoutnote.database.dao.ExerciseDao
 import com.chienkanglu.workoutnote.database.dao.SessionDao
 import com.chienkanglu.workoutnote.database.model.ExerciseEntity
 import com.chienkanglu.workoutnote.database.model.SessionEntity
+import com.chienkanglu.workoutnote.database.model.SessionExerciseCrossRef
 import com.chienkanglu.workoutnote.database.util.InstantConverter
 
 @Database(
     entities = [
         SessionEntity::class,
         ExerciseEntity::class,
+        SessionExerciseCrossRef::class,
     ],
     version = 1,
 )

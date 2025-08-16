@@ -7,18 +7,27 @@ import com.chienkanglu.workoutnote.WntAppState
 import com.chienkanglu.workoutnote.exercises.navigation.exercisesScreen
 import com.chienkanglu.workoutnote.home.navigation.HomeRoute
 import com.chienkanglu.workoutnote.home.navigation.homeScreen
+import com.chienkanglu.workoutnote.session.navigation.navigateToSession
+import com.chienkanglu.workoutnote.session.navigation.sessionScreen
 
 @Composable
 fun WntNavHost(
     appState: WntAppState,
     modifier: Modifier = Modifier,
 ) {
+    val navController = appState.navController
     NavHost(
-        appState.navController,
+        navController,
         startDestination = HomeRoute,
         modifier,
     ) {
-        homeScreen()
+        homeScreen(
+            onSessionClick = navController::navigateToSession,
+        ) {
+            sessionScreen(
+                onBackClick = navController::popBackStack,
+            )
+        }
         exercisesScreen()
     }
 }

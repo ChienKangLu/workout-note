@@ -2,11 +2,9 @@ package com.chienkanglu.workoutnote.home
 
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
@@ -35,16 +32,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.chienkanglu.workoutnote.R
 import com.chienkanglu.workoutnote.data.model.Session
 import com.chienkanglu.workoutnote.ui.common.ActionSheet
-import com.chienkanglu.workoutnote.ui.common.LocalTimeZone
-import kotlinx.datetime.Instant
-import kotlinx.datetime.toJavaInstant
-import kotlinx.datetime.toJavaZoneId
-import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
-import java.util.Locale
+import com.chienkanglu.workoutnote.ui.common.EmptySection
+import com.chienkanglu.workoutnote.ui.common.dateFormatted
 
 @Composable
 internal fun HomeScreenRoute(
+    onSessionClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = hiltViewModel(),
 ) {
@@ -55,6 +48,7 @@ internal fun HomeScreenRoute(
         deleteSessions = { ids ->
             viewModel.deleteSessions(ids)
         },
+        onSessionClick = onSessionClick,
         modifier = modifier,
     )
 }
@@ -64,6 +58,7 @@ fun HomeScreen(
     sessionsUiState: SessionsUiState,
     addSession: () -> Unit,
     deleteSessions: (List<Int>) -> Unit,
+    onSessionClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -94,20 +89,15 @@ fun HomeScreen(
             is SessionsUiState.Loading -> Unit
             is SessionsUiState.Success ->
                 if (sessionsUiState.sessions.isEmpty()) {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        Text(
-                            text = stringResource(R.string.no_sessions),
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.align(Alignment.Center),
-                        )
-                    }
+                    EmptySection(text = stringResource(R.string.no_sessions))
                 } else {
                     LazyColumn {
                         itemsIndexed(items = sessionsUiState.sessions) { index, session ->
                             SessionItem(
-                                session = session,
+                                session = session.session,
                                 isFirst = index == 0,
                                 deleteSessions = deleteSessions,
+                                onSessionClick = onSessionClick,
                                 modifier = modifier,
                             )
                         }
@@ -122,6 +112,7 @@ fun SessionItem(
     session: Session,
     isFirst: Boolean,
     deleteSessions: (List<Int>) -> Unit,
+    onSessionClick: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     if (!isFirst) {
@@ -135,7 +126,9 @@ fun SessionItem(
         modifier
             .fillMaxWidth()
             .combinedClickable(
-                onClick = {},
+                onClick = {
+                    onSessionClick(session.id)
+                },
                 onLongClick = {
                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                     showActionSheet = true
@@ -157,11 +150,3 @@ fun SessionItem(
         )
     }
 }
-
-@Composable
-fun dateFormatted(publishDate: Instant): String =
-    DateTimeFormatter
-        .ofLocalizedDate(FormatStyle.MEDIUM)
-        .withLocale(Locale.getDefault())
-        .withZone(LocalTimeZone.current.toJavaZoneId())
-        .format(publishDate.toJavaInstant())

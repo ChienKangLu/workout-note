@@ -3,7 +3,7 @@ package com.chienkanglu.workoutnote.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.chienkanglu.workoutnote.data.DefaultSessionRepository
-import com.chienkanglu.workoutnote.data.model.Session
+import com.chienkanglu.workoutnote.data.model.PopulatedSession
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -23,7 +23,7 @@ HomeViewModel
         val sessionsUiState: StateFlow<SessionsUiState> =
             sessionRepository
                 .getSessions()
-                .map<List<Session>, SessionsUiState>(SessionsUiState::Success)
+                .map<List<PopulatedSession>, SessionsUiState>(SessionsUiState::Success)
                 .onStart { emit(SessionsUiState.Loading) }
                 .stateIn(
                     scope = viewModelScope,

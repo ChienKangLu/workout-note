@@ -3,8 +3,10 @@ package com.chienkanglu.workoutnote
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.util.trace
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -14,6 +16,8 @@ import androidx.navigation.navOptions
 import com.chienkanglu.workoutnote.exercises.navigation.navigateToExercises
 import com.chienkanglu.workoutnote.home.navigation.navigateToHome
 import com.chienkanglu.workoutnote.navigation.TopLevelDestination
+import com.chienkanglu.workoutnote.navigation.routeClassName
+import com.chienkanglu.workoutnote.session.navigation.SessionRoute
 
 @Composable
 fun rememberWntAppState(navController: NavHostController = rememberNavController()): WntAppState =
@@ -29,6 +33,13 @@ fun rememberWntAppState(navController: NavHostController = rememberNavController
 class WntAppState(
     val navController: NavHostController,
 ) {
+    companion object {
+        private val NO_NAV_BARS_ROUTES =
+            listOf(
+                SessionRoute::class.simpleName,
+            )
+    }
+
     private val previousDestination = mutableStateOf<NavDestination?>(null)
 
     val currentDestination: NavDestination?
@@ -47,6 +58,12 @@ class WntAppState(
         }
 
     val topLevelDestinations: List<TopLevelDestination> = TopLevelDestination.entries
+
+    var isNavigationVisible by mutableStateOf(true)
+
+    fun updateNavigationVisibility(navDestination: NavDestination) {
+        isNavigationVisible = navDestination.routeClassName !in NO_NAV_BARS_ROUTES
+    }
 
     /**
      * UI logic for navigating to a top level destination in the app. Top level destinations have
@@ -73,8 +90,13 @@ class WntAppState(
                 }
 
             when (topLevelDestination) {
-                TopLevelDestination.HOME -> navController.navigateToHome(topLevelNavOptions)
-                TopLevelDestination.EXERCISES -> navController.navigateToExercises(topLevelNavOptions)
+                TopLevelDestination.HOME -> {
+                    navController.navigateToHome(topLevelNavOptions)
+                }
+
+                TopLevelDestination.EXERCISES -> {
+                    navController.navigateToExercises(topLevelNavOptions)
+                }
             }
         }
     }

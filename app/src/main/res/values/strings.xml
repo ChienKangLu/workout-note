@@ -11,4 +11,5 @@
     <string name="dialog_add_exercise_title">New Exercise</string>
     <string name="dialog_add_exercise_description">Please name your new exercise</string>
     <string name="dialog_add_exercise_text_field_label">Exercise Name</string>
+    <string name="new_exercise">New Exercise</string>
 </resources>
