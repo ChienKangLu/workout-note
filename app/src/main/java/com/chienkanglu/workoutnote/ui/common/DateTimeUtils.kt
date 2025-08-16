@@ -7,10 +7,21 @@ import kotlinx.datetime.toJavaZoneId
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
+enum class DateTimePattern(
+    val pattern: String,
+) {
+    DateWithTime("MMM d, uuuu 'at' HH:mm:ss"),
+    DateOnly("MMM d, uuuu"),
+    TimeOnly("HH:mm:ss"),
+}
+
 @Composable
-fun dateFormatted(instant: Instant): String =
+fun dateFormatted(
+    instant: Instant,
+    pattern: DateTimePattern = DateTimePattern.DateWithTime,
+): String =
     DateTimeFormatter
-        .ofPattern("MMM d, uuuu 'at' HH:mm:ss")
+        .ofPattern(pattern.pattern)
         .withLocale(Locale.getDefault())
         .withZone(LocalTimeZone.current.toJavaZoneId())
         .format(instant.toJavaInstant())
