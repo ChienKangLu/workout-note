@@ -17,7 +17,7 @@ fun SessionEntity.asExternalModel() =
 
 data class PopulatedSession(
     val session: Session,
-    val exercises: List<Exercise>,
+    val exercises: List<PopulatedExercise>,
 )
 
 fun PopulatedSessionEntity.asExternalModel() =

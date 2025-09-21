@@ -6,6 +6,7 @@ import com.chienkanglu.workoutnote.database.dao.SessionDao
 import com.chienkanglu.workoutnote.database.model.PopulatedSessionEntity
 import com.chienkanglu.workoutnote.database.model.SessionEntity
 import com.chienkanglu.workoutnote.database.model.SessionExerciseCrossRef
+import com.chienkanglu.workoutnote.database.model.SetEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.datetime.Clock
@@ -44,4 +45,23 @@ class DefaultSessionRepository
             sessionId = sessionId,
             exerciseIds = exerciseIds,
         ) == exerciseIds.size
+
+        override suspend fun insertSetToExercise(
+            sessionId: Int,
+            exerciseId: Int,
+            reps: Int,
+            weight: Double,
+        ) = sessionDao.insertSetToExercise(
+            SetEntity(
+                sessionId = sessionId,
+                exerciseId = exerciseId,
+                reps = reps,
+                weight = weight,
+            ),
+        ) != -1L
+
+        override suspend fun deleteSetFromExercise(setIds: List<Int>) =
+            sessionDao.deleteSetFromExercise(
+                setIds,
+            ) == setIds.size
     }

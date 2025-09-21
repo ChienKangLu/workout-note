@@ -6,10 +6,16 @@
     <string name="delete">Delete</string>
     <string name="exercises">Exercises</string>
     <string name="no_exercises">There aren\'t any exercises.</string>
-    <string name="dialog_cancel_button_title">Cancel</string>
-    <string name="dialog_create_button_title">Create</string>
+    <string name="cancel_button_title">Cancel</string>
+    <string name="create_button_title">Create</string>
     <string name="dialog_add_exercise_title">New Exercise</string>
     <string name="dialog_add_exercise_description">Please name your new exercise</string>
     <string name="dialog_add_exercise_text_field_label">Exercise Name</string>
     <string name="new_exercise">New Exercise</string>
+    <string name="add_set">Add Set</string>
+    <string name="add_set_description">Please enter the weight and reps</string>
+    <string name="weight">Weight</string>
+    <string name="reps">Reps</string>
+    <string name="weightErrorMessage">Please enter a valid weight (0–99999)</string>
+    <string name="repsErrorMessage">Please enter a valid reps (0–99999)</string>
 </resources>

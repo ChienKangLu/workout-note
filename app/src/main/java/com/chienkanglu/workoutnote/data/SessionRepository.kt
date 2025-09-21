@@ -21,4 +21,13 @@ interface SessionRepository {
         sessionId: Int,
         exerciseIds: List<Int>,
     ): Boolean
+
+    suspend fun insertSetToExercise(
+        sessionId: Int,
+        exerciseId: Int,
+        reps: Int,
+        weight: Double,
+    ): Boolean
+
+    suspend fun deleteSetFromExercise(setIds: List<Int>): Boolean
 }

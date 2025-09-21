@@ -8,6 +8,7 @@ import androidx.room.Transaction
 import com.chienkanglu.workoutnote.database.model.PopulatedSessionEntity
 import com.chienkanglu.workoutnote.database.model.SessionEntity
 import com.chienkanglu.workoutnote.database.model.SessionExerciseCrossRef
+import com.chienkanglu.workoutnote.database.model.SetEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -49,4 +50,15 @@ interface SessionDao {
         sessionId: Int,
         exerciseIds: List<Int>,
     ): Int
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertSetToExercise(setEntity: SetEntity): Long
+
+    @Query(
+        value = """
+            DELETE FROM 'set'
+            WHERE id in (:ids)
+        """,
+    )
+    suspend fun deleteSetFromExercise(ids: List<Int>): Int
 }

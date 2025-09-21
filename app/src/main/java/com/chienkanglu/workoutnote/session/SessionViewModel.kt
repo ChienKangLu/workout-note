@@ -59,6 +59,22 @@ class SessionViewModel
             }
         }
 
+        fun addSetToExercise(
+            exerciseId: Int,
+            reps: Int,
+            weight: Double,
+        ) {
+            viewModelScope.launch {
+                sessionRepository.insertSetToExercise(sessionId, exerciseId, reps, weight)
+            }
+        }
+
+        fun deleteSetFromExercise(setId: Int) {
+            viewModelScope.launch {
+                sessionRepository.deleteSetFromExercise(listOf(setId))
+            }
+        }
+
         @AssistedFactory
         interface Factory {
             fun create(sessionId: Int): SessionViewModel

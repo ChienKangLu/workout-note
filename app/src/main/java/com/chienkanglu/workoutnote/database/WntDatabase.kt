@@ -8,6 +8,7 @@ import com.chienkanglu.workoutnote.database.dao.SessionDao
 import com.chienkanglu.workoutnote.database.model.ExerciseEntity
 import com.chienkanglu.workoutnote.database.model.SessionEntity
 import com.chienkanglu.workoutnote.database.model.SessionExerciseCrossRef
+import com.chienkanglu.workoutnote.database.model.SetEntity
 import com.chienkanglu.workoutnote.database.util.InstantConverter
 
 @Database(
@@ -15,6 +16,7 @@ import com.chienkanglu.workoutnote.database.util.InstantConverter
         SessionEntity::class,
         ExerciseEntity::class,
         SessionExerciseCrossRef::class,
+        SetEntity::class,
     ],
     version = 1,
 )

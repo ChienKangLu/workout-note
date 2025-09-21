@@ -114,8 +114,8 @@ fun ExercisesScreen(
                 title = stringResource(R.string.dialog_add_exercise_title),
                 description = stringResource(R.string.dialog_add_exercise_description),
                 textFieldLabel = stringResource(R.string.dialog_add_exercise_text_field_label),
-                cancelButtonTitle = stringResource(R.string.dialog_cancel_button_title),
-                confirmButtonTitle = stringResource(R.string.dialog_create_button_title),
+                cancelButtonTitle = stringResource(R.string.cancel_button_title),
+                confirmButtonTitle = stringResource(R.string.create_button_title),
                 onDismissRequest = {
                     showAddExerciseDialog.value = false
                 },

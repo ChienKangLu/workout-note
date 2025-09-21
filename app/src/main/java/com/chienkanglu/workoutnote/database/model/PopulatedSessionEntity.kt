@@ -10,6 +10,7 @@ import androidx.room.Relation
 data class PopulatedSessionEntity(
     @Embedded val session: SessionEntity,
     @Relation(
+        entity = ExerciseEntity::class,
         parentColumn = "id",
         entityColumn = "id",
         associateBy =
@@ -19,5 +20,5 @@ data class PopulatedSessionEntity(
                 entityColumn = "exercise_id",
             ),
     )
-    val exercises: List<ExerciseEntity>,
+    val exercises: List<ExerciseWithSetsEntity>,
 )
