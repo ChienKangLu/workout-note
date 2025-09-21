@@ -21,6 +21,10 @@ android {
     namespace = "com.chienkanglu.workoutnote"
     compileSdk = 35
 
+    androidResources {
+        generateLocaleConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.chienkanglu.workoutnote"
         minSdk = 33
