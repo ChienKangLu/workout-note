@@ -20,12 +20,6 @@ import androidx.room.PrimaryKey
             childColumns = ["exercise_id"],
             onDelete = ForeignKey.CASCADE,
         ),
-        ForeignKey(
-            entity = SessionExerciseCrossRef::class,
-            parentColumns = ["session_id", "exercise_id"],
-            childColumns = ["session_id", "exercise_id"],
-            onDelete = ForeignKey.CASCADE,
-        ),
     ],
 )
 data class SetEntity(

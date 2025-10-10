@@ -1,24 +1,17 @@
 package com.chienkanglu.workoutnote.database.model
 
-import androidx.room.Embedded
-import androidx.room.Junction
-import androidx.room.Relation
-
 /**
  * External data layer representation of a fully populated session
+ *
+ * As Room does not support multiple columns with @Relation, the related data must be populated manually.
+ * https://issuetracker.google.com/issues/64247765
  */
 data class PopulatedSessionEntity(
-    @Embedded val session: SessionEntity,
-    @Relation(
-        entity = ExerciseEntity::class,
-        parentColumn = "id",
-        entityColumn = "id",
-        associateBy =
-            Junction(
-                value = SessionExerciseCrossRef::class,
-                parentColumn = "session_id",
-                entityColumn = "exercise_id",
-            ),
-    )
+    val session: SessionEntity,
     val exercises: List<ExerciseWithSetsEntity>,
+)
+
+data class ExerciseWithSetsEntity(
+    val exercise: ExerciseEntity,
+    val sets: List<SetEntity>,
 )
